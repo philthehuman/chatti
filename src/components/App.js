@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useReducer, useEffect} from 'react'
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import About from './About'
 import LoginForm from './LoginForm'
@@ -7,16 +7,34 @@ import MessageForm from './MessageForm'
 import Messages from './Messages'
 import Message from './Message'
 import NotFound from './NotFound'
-import initiaMessageList from './../data/message-list.json'
+import initialMessageList from './../data/message-list.json'
+import reducer from '../utils/reducer'
 
 
 const App = () => {
-  const [loggedInUser, setLoggedInUser] = useState("")
-  const [messageList, setMessageList] = useState([])
+  // define the initial state
+  const initialstate = {
+    messageList: [],
+    loggedInUser: ""
+  }
+  // useReducer has two arguments
+  // 1. reducer function
+  // 2. initial state (same as useState)
+  // store is where the state is stored
+  // dispatch invokes the reducer function
+  const [store, dispatch] = useReducer(reducer, initialstate)
+  const {messageList, loggedInUser} = store
+
+  // const [loggedInUser, setLoggedInUser] = useState("")
+  // const [messageList, setMessageList] = useState([])
 
 
   function activateUser(email){
-    setLoggedInUser(email)
+    // setLoggedInUser(email)
+    dispatch({
+      type: "setLoggedInUser",
+      data: email
+    })
   }
 
   function addMessage(messageText){
@@ -25,9 +43,13 @@ const App = () => {
       text: messageText,
       user: loggedInUser
     }
-    setMessageList(
-      (messageList) => [message, ...messageList]
-    )
+    // setMessageList(
+    //   (messageList) => [message, ...messageList]
+    // )
+    dispatch({
+      type: "addMessage",
+      data: message
+    })
   }
 
   function findMessage(id){
@@ -42,7 +64,12 @@ const App = () => {
   
 
   useEffect(() =>{
-    setMessageList(initiaMessageList)
+    // setMessageList(initialMessageList)
+    // will run the reucer and will send an object that is the action
+    dispatch({
+      type: "setMessageList",
+      data: initialMessageList
+    })
   },[])
 
   return (
