@@ -9,6 +9,7 @@ import Message from './Message'
 import NotFound from './NotFound'
 import initialMessageList from './../data/message-list.json'
 import reducer from '../utils/reducer'
+import {StateContext} from '../utils/stateContext'
 
 
 const App = () => {
@@ -75,6 +76,8 @@ const App = () => {
   return (
     <div >
           <h1>Chatti</h1>
+
+          <StateContext.Provider value={{value, dispatch}}>
         
           <BrowserRouter>
             <Navigation loggedInUser={loggedInUser} activateUser={activateUser}/>
@@ -94,6 +97,7 @@ const App = () => {
               <Route component={NotFound} />
             </Switch>
           </BrowserRouter>
+          </StateContext.Provider>
     </div>
   )
 }
