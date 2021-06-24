@@ -24,44 +24,15 @@ const App = () => {
   // store is where the state is stored
   // dispatch invokes the reducer function
   const [store, dispatch] = useReducer(reducer, initialstate)
-  const {messageList, loggedInUser} = store
+  const {messageList} = store
 
   // const [loggedInUser, setLoggedInUser] = useState("")
   // const [messageList, setMessageList] = useState([])
 
 
-  function activateUser(email){
-    // setLoggedInUser(email)
-    dispatch({
-      type: "setLoggedInUser",
-      data: email
-    })
-  }
-
-  function addMessage(messageText){
-    const message = {
-      id: getNextId(),
-      text: messageText,
-      user: loggedInUser
-    }
-    // setMessageList(
-    //   (messageList) => [message, ...messageList]
-    // )
-    dispatch({
-      type: "addMessage",
-      data: message
-    })
-  }
-
   function findMessage(id){
     return messageList.find(m => m.id === parseInt(id))
   }
-
-  function getNextId(){
-    const id = messageList.map(m => m.id)
-    return Math.max(...id) + 1
-  }
-
   
 
   useEffect(() =>{
@@ -77,23 +48,20 @@ const App = () => {
     <div >
           <h1>Chatti</h1>
 
-          <StateContext.Provider value={{value, dispatch}}>
+          <StateContext.Provider value={{store, dispatch}}>
         
           <BrowserRouter>
-            <Navigation loggedInUser={loggedInUser} activateUser={activateUser}/>
+            <Navigation/>
             <Switch>
               <Route exact path="/">
                 <Redirect to="/messages" />
               </Route>
-              <Route exact path="/messages" 
-              render={() => <Messages messageList={messageList}/>}/>
+              <Route exact path="/messages" component = {Messages} />
               <Route exact path="/messages/:id"
               render={(props) => <Message {...props} message={findMessage(props.match.params.id)}/>}/>
               <Route exact path="/about" component={About} />
-              <Route exact path="/login" 
-              render={(props) => <LoginForm {...props} activateUser={activateUser} />}/>
-              <Route exact path="/newmessage" 
-              render={(props) => <MessageForm {...props} loggedInUser={loggedInUser} addMessage={addMessage}/> } />
+              <Route exact path="/login" component={LoginForm} />
+              <Route exact path="/newmessage" component={MessageForm} />
               <Route component={NotFound} />
             </Switch>
           </BrowserRouter>

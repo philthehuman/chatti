@@ -1,8 +1,10 @@
 import React from 'react'
 import Message from './Message'
+import { useGlobalState } from '../utils/stateContext'
 
-const Messages = ({messageList}) => {
-    console.log(messageList)
+const Messages = ({}) => {
+    const {store} = useGlobalState()
+    const {messageList} = store
     return (
         <div>
             <h1>Messages</h1>

@@ -1,8 +1,12 @@
 import React, {useState} from 'react'
 import {Link} from 'react-router-dom'
+import { useGlobalState } from '../utils/stateContext'
 
 
-const MessageForm = ({history, loggedInUser, addMessage}) => {
+const MessageForm = ({history, addMessage}) => {
+
+    const {store, dispatch} = useGlobalState()
+    const {loggedInUser, messageList} = store
 
     const initialFormData = {
         messageText: ""
@@ -10,12 +14,31 @@ const MessageForm = ({history, loggedInUser, addMessage}) => {
 
     const [formData, setFormData] = useState(initialFormData)
 
+    
+
     function handleSubmit(event) {
         event.preventDefault()
         addMessage(formData.messageText)
         document.getElementById("messageText").value = ""
         history.push('/messages')
     }
+
+    function getNextId(){
+        const id = messageList.map(m => m.id)
+        return Math.max(...id) + 1
+      }
+
+    function addMessage(messageText){
+        const message = {
+          id: getNextId(),
+          text: messageText,
+          user: loggedInUser
+        }
+        dispatch({
+          type: "addMessage",
+          data: message
+        })
+      }
 
     function handleFormData(event) {
         setFormData({

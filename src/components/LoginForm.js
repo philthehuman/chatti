@@ -1,6 +1,9 @@
 import React, {useState} from 'react'
+import {useGlobalState} from '../utils/stateContext'
 
-const LoginForm = ({history, activateUser}) => {
+const LoginForm = ({history}) => {
+
+    const {dispatch} = useGlobalState()
 
     const initialFormData = {
         email: "",
@@ -17,7 +20,10 @@ const LoginForm = ({history, activateUser}) => {
 
     function handleSubmit(event){
         event.preventDefault()
-        activateUser(formData.email)
+        dispatch({
+            type: "setLoggedInUser",
+            data: formData.email
+          })
         return history.push("/")
         
         
